@@ -1,7 +1,7 @@
 # Merges users orders to their account after sign in and sign up.
 Warden::Manager.after_set_user except: :fetch do |user, auth, _opts|
   token = auth.cookies.signed[:guest_token] || auth.cookies.signed[:token]
-  token_attr = Spree::Order.has_attribute?(:token) ? :token : :guest_token
+  token_attr = Spree::Order.new.has_attribute?(:token) ? :token : :guest_token
 
   if token.present? && user.is_a?(Spree.user_class)
     Spree::Order.incomplete.where(token_attr => token, user_id: nil).each do |order|
